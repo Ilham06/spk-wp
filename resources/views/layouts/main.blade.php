@@ -11,9 +11,9 @@
         <div class="container d-flex flex-wrap">
           <ul class="nav me-auto">
             <li class="nav-item"><a href="#" class="nav-link link-dark px-2 active" aria-current="page">Home</a></li>
-            <li class="nav-item"><a href="#" class="nav-link link-dark px-2">Alternative</a></li>
-            <li class="nav-item"><a href="#" class="nav-link link-dark px-2">Criteria</a></li>
-            <li class="nav-item"><a href="#" class="nav-link link-dark px-2">Calculate</a></li>
+            <li class="nav-item"><a href="{{ route('alternative.index') }}" class="nav-link link-dark px-2">Alternative</a></li>
+            <li class="nav-item"><a href="{{ route('criteria.index') }}" class="nav-link link-dark px-2">Criteria</a></li>
+            <li class="nav-item"><a href="{{ route('calculate.index') }}" class="nav-link link-dark px-2">Calculate</a></li>
             <li class="nav-item"><a href="#" class="nav-link link-dark px-2">Results</a></li>
           </ul>
           <ul class="nav">
@@ -29,6 +29,8 @@
           </a>
         </div>
       </header>
+
+      @yield('content')
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ENjdO4Dr2bkBIFxQpeoTz1HIcje39Wm4jDKdf19U8gI4ddQ3GYNS7NTKfAdVQSZe" crossorigin="anonymous"></script>
   </body>
 </html>

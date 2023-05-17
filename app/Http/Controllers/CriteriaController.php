@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\CriteriaRequest;
 use App\Models\Criteria;
 use Illuminate\Http\Request;
 
@@ -12,7 +13,11 @@ class CriteriaController extends Controller
      */
     public function index()
     {
-        //
+        $criterias = Criteria::orderBy('created_at', 'asc')->get();
+
+        return view('pages.criteria.index', [
+            'criterias' => $criterias
+        ]);
     }
 
     /**
@@ -20,15 +25,16 @@ class CriteriaController extends Controller
      */
     public function create()
     {
-        //
+        return view('pages.criteria.create');
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(CriteriaRequest $request)
     {
-        //
+        Criteria::create($request->all());
+        return redirect()->route('criteria.index')->with('success', 'Data Berhasil Ditambahkan');
     }
 
     /**

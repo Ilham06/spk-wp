@@ -8,4 +8,16 @@ use Illuminate\Database\Eloquent\Model;
 class AlternativeCriteria extends Model
 {
     use HasFactory;
+
+    protected $fillable = ['alternative_id', 'criteria_id', 'value'];
+
+    public function alternative()
+    {
+        return $this->belongsTo(Alternative::class);
+    }
+
+    public function criteria()
+    {
+        return $this->belongsTo(Criteria::class);
+    }
 }
