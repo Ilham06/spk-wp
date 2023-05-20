@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\CalculateRequest;
 use App\Models\Alternative;
 use App\Models\AlternativeCriteria;
 use App\Models\Criteria;
@@ -12,7 +13,7 @@ class AlternativeCriteriaController extends Controller
     public function index()
     {
         $alternatives = Alternative::with('criterias')->orderBy('created_at', 'asc')->get();
-        $criterias = Criteria::all();
+        $criterias = Criteria::orderBy('code', 'asc')->get();
 
         return view('pages.calculate.index', [
             'criterias' => $criterias,
@@ -22,7 +23,7 @@ class AlternativeCriteriaController extends Controller
 
     public function edit($id)
     {
-        $criterias = Criteria::all();
+        $criterias = Criteria::orderBy('code', 'asc')->get();
         $alternative = Alternative::findOrFail($id);
 
         return view('pages.calculate.edit', [
@@ -31,45 +32,47 @@ class AlternativeCriteriaController extends Controller
         ]);
     }
 
-    public function update(Request $request, $id)
+    public function update(CalculateRequest $request, $id)
     {
-
-        foreach ($request->criteria as $key => $criteria) {
-            if ($criteria) {
-                AlternativeCriteria::updateOrCreate([
-                    'alternative_id' => $id,
-                    'criteria_id' => $key
-                ], [
-                    'value' => $criteria
-                ]);
-            }
+        foreach ($request->criteria as $key => $c) {
+            AlternativeCriteria::updateOrCreate([
+                'alternative_id' => $id,
+                'criteria_id' => $key
+            ], [
+                'value' => $c
+            ]);
         }
         return redirect()->route('calculate.index')->with('success', 'Data Berhasil Diubah');
+    }
+
+    public function clear()
+    {
+        AlternativeCriteria::truncate();
+        return redirect()->route('calculate.index')->with('success', 'Data Dikosongkan');
     }
 
     public function process()
     {
         $criterias = Criteria::with('alternatives')->get();
-        $alternatives = Alternative::with('criterias.criteria')->orderBy('created_at', 'asc')->get();
+        $alternatives = Alternative::with('criterias.criteria')->get();
         $total = $criterias->sum('weight');
 
         $w = [];
         foreach ($criterias as $key => $criteria) {
             $value = $criteria->weight / $total;
-
             $value = ($criteria->attribute == 'benefit') ? $value * 1 : $value * (-1) ;
-            array_push($w, round($value, 3));
+            $w[$criteria->code] = round($value, 3);
         }
 
-        $s = [];
+        $result_s = [];
         $complete_s = [];
         foreach ($alternatives as $key => $alternative) {
 
             $multiply = 1;
             foreach ($alternative->criterias as $key => $criteria) {
-                $value = pow($criteria->value, $w[$key]);
-                $s[$alternative->code][$criteria->id] = round($value, 4);
-                $multiply *= $s[$alternative->code][$criteria->id];
+                $value = pow($criteria->value, $w[$criteria->criteria->code]);
+                $result_s[$alternative->code][$criteria->id] = round($value, 4);
+                $multiply *= $result_s[$alternative->code][$criteria->id];
             }
 
             $complete_s[$alternative->code] = round($multiply, 4);
@@ -83,9 +86,17 @@ class AlternativeCriteriaController extends Controller
         }
 
         $rank = collect($v)->sortDesc();
+        $highest['alternativ'] = Alternative::whereCode(array_key_first($rank->toArray()))->first();
+        $highest['value'] = $rank->first();
 
-        dd($rank);
-
-
+        return view('pages.calculate.result', [
+            'criterias' => $criterias,
+            'alternatives' => $alternatives,
+            'complete_w' => $w,
+            'complete_s' => $complete_s,
+            'complete_v' => $v,
+            'result' => $rank,
+            'highest' => $highest
+        ]);
     }
 }

@@ -6,7 +6,7 @@
 		<div class="col-lg-6">
 			<div class="card">
 				<div class="card-header">
-					Data Kriteria
+					Form Data Kriteria
 				</div>
 				<div class="card-body">
 					<form action="{{ route('criteria.store') }}" method="POST">

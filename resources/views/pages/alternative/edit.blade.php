@@ -6,7 +6,7 @@
 		<div class="col-lg-6">
 			<div class="card">
 				<div class="card-header">
-					Edit Alternatif
+					Form Data Alternatif
 				</div>
 				<div class="card-body">
 					<form action="{{ route('alternative.update', $alternative->id) }}" method="POST">
@@ -39,7 +39,7 @@
 							</span>
 							@enderror
 						</div>
-						<button type="submit" class="btn btn-success">Submit</button>
+						<button type="submit" class="btn btn-success">Simpan</button>
 					</form>
 				</div>
 			</div>

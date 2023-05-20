@@ -48,24 +48,31 @@ class CriteriaController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Criteria $criteria)
+    public function edit($id)
     {
-        //
+        $criteria = Criteria::findOrFail($id);
+
+        return view('pages.criteria.edit', [
+            'criteria' => $criteria
+        ]);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Criteria $criteria)
+    public function update(CriteriaRequest $request, $id)
     {
-        //
+        $criteria = Criteria::findOrFail($id);
+        $criteria->update($request->all());
+        return redirect()->route('criteria.index')->with('success', 'Data Berhasil Diubah');
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Criteria $criteria)
+    public function destroy($id)
     {
-        //
+        Criteria::destroy($id);
+        return redirect()->route('criteria.index')->with('success', 'Data Berhasil Dihapus');
     }
 }

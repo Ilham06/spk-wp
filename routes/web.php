@@ -26,4 +26,5 @@ Route::resource('criteria', CriteriaController::class);
 Route::get('calculate', [AlternativeCriteriaController::class, 'index'])->name('calculate.index');
 Route::get('calculate/edit/{id}', [AlternativeCriteriaController::class, 'edit'])->name('calculate.edit');
 Route::patch('calculate/edit/{id}', [AlternativeCriteriaController::class, 'update'])->name('calculate.update');
-Route::get('calculate/process', [AlternativeCriteriaController::class, 'process'])->name('calculate.process');
+Route::post('calculate/process', [AlternativeCriteriaController::class, 'process'])->name('calculate.process');
+Route::post('calculate/clear', [AlternativeCriteriaController::class, 'clear'])->name('calculate.clear');
